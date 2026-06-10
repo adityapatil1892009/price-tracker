@@ -34,7 +34,10 @@ price = int(
     .replace("₹", "")
     .replace(",", "")
 )
-
+print("Price:", price)
+print("SENDER:", os.environ.get("SENDER"))
+print("RECEIVER:", os.environ.get("RECEIVER"))
+print("About to send email...")
 if price > 100:
     message = f"Subject:Price down alert!!\n\nThe price of the book named as 'Lost Generation' is dropped to {price}\nProduct link -- {link}"
 
@@ -43,7 +46,14 @@ if price > 100:
         to_addrs=os.environ["RECEIVER"],
         msg=message
     )
+    result = server.sendmail(
+    from_addr=os.environ["SENDER"],
+    to_addrs=os.environ["RECEIVER"],
+    msg=message
+)
 
+print("sendmail returned:", result)
+print("Email sent!")
 server.quit()
 
 
