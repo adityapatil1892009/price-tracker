@@ -19,9 +19,23 @@ response = requests.get(link,headers=headers)
 response.encoding = "utf-8"
 
 soup = BeautifulSoup(response.text,"html.parser")
-price = int(soup.find("span", class_="text-2xl md:text-3xl font-bold").get_text(strip=True).replace("₹",""))
+price_tag = soup.find(
+    "span",
+    class_="text-2xl md:text-3xl font-bold"
+)
 
-if price < 100:
+if price_tag is None:
+    print("Price element not found!")
+    print(response.text[:2000])
+    exit()
+
+price = int(
+    price_tag.get_text(strip=True)
+    .replace("₹", "")
+    .replace(",", "")
+)
+
+if price > 100:
     message = f"Subject:Price down alert!!\n\nThe price of the book named as 'Lost Generation' is dropped to {price}\nProduct link -- {link}"
 
     result = server.sendmail(
